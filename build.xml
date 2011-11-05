@@ -1,0 +1,58 @@
+<project name="iPodBackuper" default="run" basedir=".">
+	<description>
+        build a war for the ${ant.project.name} project
+    </description>
+	<!-- set global properties for this build -->
+	<property name="src" location="src" />
+	<property name="classes" location="bin" />
+	<property name="dist" location="${basedir}" />
+	<property name="lib" location="lib" /> 
+	<property name="config" location="conf" />
+
+	<path id="class.path">
+		<fileset dir="${lib}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+	
+	<target name="init">
+		<!-- Create the build directory structure used by compile -->
+		<mkdir dir="${classes}" />
+		
+		<condition property="jar.notexist">
+			<not>
+				<available file="${dist}/*.jar" />
+			</not>
+		</condition>
+	</target>
+
+	<target name="compile" depends="init" description="compile the source ">
+		<!-- Compile the java code from ${src} into ${build} -->
+		<javac srcdir="${src}" destdir="${classes}" >
+			<classpath>
+				<path refid="class.path"/>
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="dist" depends="init, compile" description="generate the distribution" if="jar.notexist">
+		<jar destfile="${dist}/${ant.project.name}.jar" basedir="${classes}"/>
+	</target>
+
+	<target name="clean" description="clean up">
+		<!-- Delete the ${build} and ${dist} directory trees -->
+		<delete dir="${classes}" />
+		<delete file="${basedir}/log.txt" />
+		<delete file="${dist}/${ant.project.name}.jar"/>
+	</target>
+	
+	<target name="run" depends="dist">
+		<java classname="com.ipod.backuper.Launcher" fork="true">
+				<jvmarg value="-Dlog4j.configuration=file:${config}/log4j.properties"/>
+				<classpath>
+					<path refid="class.path"/>
+					<path path="${dist}/iPodBackuper.jar"/>					
+				</classpath>
+		</java>
+	</target>	
+</project>
