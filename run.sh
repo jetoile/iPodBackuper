@@ -11,4 +11,4 @@ done
 
 echo $APPLI_CLASSPATH
 
-java -classpath $APPLI_CLASSPATH -Dlog4j.configuration=file:$APPLI_CONFIG/$log4jconfig com.ipod.backuper.Launcher
+java -classpath $APPLI_CLASSPATH -Dlog4j.configuration=file:$APPLI_CONFIG/$log4jconfig fr.jetoile.ipod.backuper.Launcher
